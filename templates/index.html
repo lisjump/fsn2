@@ -1,47 +1,62 @@
-<!doctype html>
-<html>
-<head>
-  <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyCDpsNYziufRRvuVcH1XZQmrSoIqy0cxBU",
-      authDomain: "familystrengthsnetwork.firebaseapp.com",
-      databaseURL: "https://familystrengthsnetwork.firebaseio.com",
-      projectId: "familystrengthsnetwork",
-      storageBucket: "familystrengthsnetwork.appspot.com",
-      messagingSenderId: "156974147386"
-    };
-    firebase.initializeApp(config);
-  </script>
-  <script src="https://cdn.firebase.com/libs/firebaseui/2.6.2/firebaseui.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.2/firebaseui.css">
+{% extends "standardtemplate.html" %}
+{% set active_page = "home" -%}
+{% block title %}Index{% endblock %}
+{% block content %}
+    <div class="white">
 
-  <title>Datastore and Firebase Auth Example</title>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+    {% if session.admin %}
+      You are logged in as an administrator <br><br>
+      {% include "adminhomeinnards.html" %}
+      <br><br>
 
-  <h1>Datastore and Firebase Auth Example</h1>
-
-  <div id="firebaseui-auth-container"></div>
-
-  <button id="sign-out" hidden=true>Sign Out</button>
-
-  <div id="login-info" hidden=true>
-    <h2>Login info:</h2>
-    {% if user_data %}
-      <dl>
-        <dt>Name</dt><dd>{{ user_data['name'] }}</dd>
-        <dt>Email</dt><dd>{{ user_data['email'] }}</dd>
-        <dt>Last 10 visits</dt><dd>
-          {% for time in times %}
-            <p>{{ time['timestamp'] }}</p>
-          {% endfor %} </dd>
-      </dl>
-    {% elif error_message %}
-      <p>Error: {{ error_message }}</p>
+    {% elif current_user.is_authenticated %}
+      Welcome to Family Strengths Network. <br><br>
+    {% else %}
+      Please {{ session.logintext }} to register or log a visit. <br><br>
     {% endif %}
-  </div></body>
-</html>
+
+    <strong>THIS WEEK'S EVENTS</strong>
+    <table id="visitlist" class="eventlist">
+      <tr>
+		    <th class="datasheet">Event</th>
+		    <th class="datasheet">Name</th>
+	      <th class="datasheet">Date</th>
+	      <th class="datasheet">Time</th>
+      </tr>
+      {% for event in events %}
+        <tr class="{{ loop.cycle('odd', 'even') }}">
+          <td>
+            {{ event.name }}
+          </td>
+          <td>
+            {% for instance in event.instances %}
+              {% for session in event.sessions %}
+                {% if session.id == instance.sessionid %}
+                  {% if session.cancel %}
+                    CANCELLED
+                  {% endif %}
+                  {% if session.name %}
+                    {{ session.name }}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if instance.cancel %}
+                CANCELLED
+              {% endif %}
+              {{ instance.name }}<br>
+            {% endfor %}
+          </td>
+          <td>
+            {% for instance in event.instances %}
+              {{ instance.date }}<br>
+            {% endfor %}
+          </td>
+          <td>
+            {% for instance in event.instances %}
+              {{ instance.starttime }} - {{ instance.endtime }}<br>
+            {% endfor %}
+          </td>
+       </tr>
+      {% endfor %}
+    </table>
+  {% endblock %}

@@ -1,92 +1,81 @@
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import datetime
-from flask import Flask, render_template, request
+import google.oauth2.id_token
+from flask import Flask, render_template, request, redirect, url_for, flash
 from google.auth.transport import requests
 from google.cloud import datastore
-import google.oauth2.id_token
+from keys import *
+from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin, current_user
+from urllib.parse import urlparse, urljoin
+from config import Config
+from forms import *
+from flask_sqlalchemy import SQLAlchemy
 
-# [START gae_python37_datastore_store_and_fetch_times]
-from google.cloud import datastore
+# datastore_client = datastore.Client()
 
-datastore_client = datastore.Client()
-
-# [END gae_python37_datastore_store_and_fetch_times]
-app = Flask(__name__)
-
-
-# [START gae_python37_datastore_store_and_fetch_times]
-def store_time(dt):
-    entity = datastore.Entity(key=datastore_client.key('visit'))
-    entity.update({
-        'timestamp': dt
-    })
-
-    datastore_client.put(entity)
-
-
-def fetch_times(limit):
-    query = datastore_client.query(kind='visit')
-    query.order = ['-timestamp']
-
-    times = query.fetch(limit=limit)
-
-    return times
-# [END gae_python37_datastore_store_and_fetch_times]
+#  --------  INITIALIZING AND UTILITIES  --------
 
 firebase_request_adapter = requests.Request()
 
-@app.route('/')
-def root():
+app = Flask(__name__)
+app.config.from_object(Config)
+login = LoginManager(app)
+login.login_view = 'login'
+db = SQLAlchemy(app)
+from models import *
+from routes import *
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc
+
+#  --------  SESSION MANAGEMENT  --------
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
+#  --------  SCHTUFF  --------
+
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
     # Verify Firebase auth.
-    id_token = request.cookies.get("token")
-    error_message = None
-    claims = None
-    times = None
+    # id_token = request.cookies.get("token")
+    #
+    # if id_token:
+    #     try:
+    #         # Verify the token against the Firebase Auth API.
+    #         claims = google.oauth2.id_token.verify_firebase_token(
+    #             id_token, firebase_request_adapter)
+    #         user = User(id = id_token)
+    #         login_user(user)
+    #         print("hello")
+    #     except ValueError as exc:
+    #         # This will be raised if the token is expired or any other
+    #         # verification checks fail.
+    #         error_message = str(exc)
+    #         return redirect(url_for('login'))
+    #
+    #     next = request.args.get('next')
+    #     # is_safe_url should check if the url is safe for redirects.
+    #     # See http://flask.pocoo.org/snippets/62/ for an example.
+    #     if not is_safe_url(next):
+    #         return flask.abort(400)
+    #     else:
+    #         return redirect(next)
+    # return render_template('login.html', title='Sign In', form=form)
 
-    if id_token:
-        try:
-            # Verify the token against the Firebase Auth API. This example
-            # verifies the token on each page load. For improved performance,
-            # some applications may wish to cache results in an encrypted
-            # session store (see for instance
-            # http://flask.pocoo.org/docs/1.0/quickstart/#sessions).
-            claims = google.oauth2.id_token.verify_firebase_token(
-                id_token, firebase_request_adapter)
-        except ValueError as exc:
-            # This will be raised if the token is expired or any other
-            # verification checks fail.
-            error_message = str(exc)
-
-        # Record and fetch the recent times a logged-in user has accessed
-        # the site. This is currently shared amongst all users, but will be
-        # individualized in a following step.
-        store_time(datetime.datetime.now())
-        times = fetch_times(10)
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@login_required
+def index():
+    user = User()
+    login_user(user)
 
     return render_template(
-        'index.html',
-        user_data=claims, error_message=error_message, times=times)
+        'index.html',)
 
 if __name__ == '__main__':
-    # This is used when running locally only. When deploying to Google App
-    # Engine, a webserver process such as Gunicorn will serve the app. This
-    # can be configured by adding an `entrypoint` to app.yaml.
-
-    # Flask's development server will automatically serve static files in
-    # the "static" directory. See:
-    # http://flask.pocoo.org/docs/1.0/quickstart/#static-files. Once deployed,
-    # App Engine itself will serve those files as configured in app.yaml.
     app.run(host='127.0.0.1', port=8080, debug=True)

@@ -1,0 +1,3 @@
+RENAME TABLE patron TO user;
+RENAME TABLE patronhash TO userhousehold;
+ALTER TABLE userhousehold CHANGE `patronid` `userid` int(11);

@@ -1,10 +1,12 @@
 window.addEventListener('load', function () {
-  document.getElementById('sign-out').onclick = function () {
+  document.getElementById('login').onclick = function () {
     firebase.auth().signOut();
   };
 
   // FirebaseUI config.
   var uiConfig = {
+    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+    signInFlow: 'popup',
     signInSuccessUrl: '/',
     signInOptions: [
       // Comment out any lines corresponding to providers you did not check in
