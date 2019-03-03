@@ -1,0 +1,16 @@
+{% extends "standardtemplate.html" %}
+{% set active_page = "usersettings" -%}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<h3 class = "white"> Update Registration </h3>
+
+<h3 class = "white"> Update Communication </h3>
+
+<h3 class = "white"> Password </h3>
+<a href="{{ url_for('user.change_password') }}" tabindex='190' class = "white">
+  Change Password</a><br>
+
+
+
+{% endblock %}

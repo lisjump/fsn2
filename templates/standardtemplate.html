@@ -7,9 +7,9 @@
   </head>
   <body>
     {% if current_user.is_authenticated %}
-      {% set loginlist = (url_for('logout'), 'logout', 'Logout') -%}
+      {% set loginlist = (url_for('user.logout'), 'logout', 'Logout') -%}
     {% else %}
-      {% set loginlist = (url_for('login'), 'login', 'Login') -%}
+      {% set loginlist = (url_for('user.login'), 'login', 'Login') -%}
     {% endif %}
 
     <div class="menubox">
@@ -17,6 +17,7 @@
         ('/', 'home', 'Home'),
         ('/register', 'register', 'Register'),
         ('/visitlog', 'visit', 'Visit Log'),
+        ('/usersettings', 'usersettings', 'Settings'),
         loginlist,
       ] -%}
       {% set admin_bar = [
@@ -45,12 +46,11 @@
 
     </div>
     <div class='margin'>
-      <hr>
       {% with messages = get_flashed_messages() %}
       {% if messages %}
       <ul>
           {% for message in messages %}
-          <li>{{ message }}</li>
+          <li class = "alert">{{ message }}</li>
           {% endfor %}
       </ul>
       {% endif %}

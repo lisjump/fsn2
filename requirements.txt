@@ -6,3 +6,4 @@ flask-login==0.4.1
 flask-wtf==0.14.2
 flask-sqlalchemy==2.3.2
 pymysql==0.9.3
+flask-user==1.0.1.5

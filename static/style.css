@@ -19,18 +19,82 @@ body {
   float:right;
 }
 
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 43%;
+  padding: 3%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, .column {
+    width: 95%;
+    margin-top: 0;
+  }
+}
+
 /* ------------------ Buttons and Form Elements --------------------- */
 
-select {
-  width:100%;
+input[type=text], input[type=password], select, textarea {
+   width: 100%;
+   padding: 4px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   resize: vertical;
+ }
+
+ label {
+   padding: 12px 12px 12px 0;
+   display: inline-block;
+   color:white;
+   text-align:left;
+   vertical-align:middle;
+   padding: 4px;
+   text-shadow: 0px 0px 1px black;
 }
 
-/*
-input[type=checkbox], input[type=radio]{
-  display:none;
-}
+ input[type=submit] {
+   background-color: #A33B20;
+   border: 1px solid #A33B20;
+   color: white;
+   padding: 10px 20px;
+   margin: 5px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   text-shadow: 0px 0px 1px black;
+   font-family:inherit;
+   font-size:inherit;
+   cursor: pointer;
+   border-radius: 5px;
+   cursor: pointer;
+   float: right;
+ }
 
- */
+ input[type=submit]:hover {
+   background-color: #45a049;
+ }
+
 input.date {
   margin: 0px 3%;
   border: 1px solid black;
@@ -86,7 +150,8 @@ input[type=checkbox]:hover + span:hover,
 input[type=radio]:checked + span,
 input[type=radio]:hover + span:hover,
 .button:hover,
-button:hover {
+button:hover,
+input[type=submit]:hover {
    background: #E07626;
    text-decoration: none;
    border: 1px solid white;
@@ -272,6 +337,12 @@ table.addeventmenu {
 }
 /* ------------------- Divs and Spans -----------------------------*/
 
+.alert {
+  color: yellow;
+  text-shadow: 0px 0px 1px black;
+  font-weight:bold;
+}
+
 div.error {
   color: yellow;
   margin: 15px 10px;
@@ -284,8 +355,9 @@ div.margin {
   padding: 15px 10px;
 }
 
-div.white {
+.white {
   color: white;
+  text-shadow: 0px 0px 1px black;
 }
 
 div.overlay {
