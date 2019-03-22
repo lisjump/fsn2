@@ -6,11 +6,10 @@
 {% from "flask_user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
 
 <div class="column">
-
 <h2 class = "white">Sign in</h2>
 
 {# ** Login form ** #}
-<form action="{{ url_for('user.login') }}" method="POST" role="form" width = 50%>
+<form action="{{ url_for('user.login') }}" method="POST" role="form">
     {{ login_form.hidden_tag() }}
 
     {# Username or Email #}
@@ -40,8 +39,8 @@
 
   </form>
 </div>
-<div class="column">
 
+<div class="column">
 <h2 class = "white">Register</h2>
 
 {# ** Register form ** #}

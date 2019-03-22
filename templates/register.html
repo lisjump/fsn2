@@ -1,0 +1,84 @@
+{% extends "standardtemplate.html" %}
+{% set active_page = "register" -%}
+{% block title %} Register {% endblock %}
+{% block content %}
+
+{% set formaction = url_for('register') -%}
+{% if "admin" in current_user.rolenames %}
+  {{ form.id }}
+{% endif %}
+<form action="{{ formactions }}" method="post">
+
+  <table class="datasheet" cellpadding="0" cellspacing="0" id="patrontable" style="width: 100%;">
+    <thead>
+      <th class="datasheet" style="width: 10%;" nowrap="nowrap">First</th>
+      <th class="datasheet" style="width: 10%;" nowrap="nowrap">Last</th>
+      <th class="datasheet" style="width: 10%;" nowrap="nowrap">Email</th>
+      <th class="datasheet" style="width: 4%;" nowrap="nowrap">Birthyear**</th>
+      <th class="datasheet" style="width: 4%;" nowrap="nowrap">Gender*</th>
+      <th class="datasheet" style="width: 9%;" nowrap="nowrap">Ethnicity*</th>
+      <th class="datasheet" style="width: 3%;" nowrap="nowrap">LANL*</th>
+    </thead>
+
+    <tbody>
+      {% macro familymember(user, collapse = False) -%}
+        <tr id="userrow" class="datasheet" {%if collapse %} style='visibility:collapse' {% endif %}>
+          <td>{{ user.first(class_="normalrow") }}</td>
+          <td>{{ user.last(class_="normalrow") }}</td>
+          <td>{{ user.email(class_="normalrow") }}</td>
+          <td>{{ user.birthyear(class_="normalrow") }}</td>
+          <td>{{ user.gender(class_="normalrow") }}</td>
+          <td>{{ user.ethnicity(class_="normalrow") }}</td>
+          <td>{{ user.lanl(class_="normalrow") }}</td>
+        </tr>
+      {%- endmacro %}
+
+      {% set counter = ['1'] %}
+
+      {% for user in form.users.entries %}
+        {% set collapse = False %}
+        {% if not( user.first.data or user.last.data or user.email.data) %}
+          {% if counter.append('1') %}{% endif %}
+          {% if counter|length > 3 %}
+            {% set collapse = True %}
+          {% endif %}
+        {% endif %}
+        {{ familymember(user = user, collapse = collapse) }}
+      {% endfor %}
+
+
+
+    </tbody>
+  </table>
+
+  <button  type="button" name='addrows' onClick = "AddUserRows('patrontable', 2)" class="submit">Add Rows</button>
+  <br>
+  <br>
+
+
+  <div class = "col-50">{{ form.address1 }} {{ form.address1.label }}</div>
+  <div class = "col-50">{{ form.address2 }} {{ form.address2.label }}</div>
+  <br>
+  <div class = "col-20">{{ form.city }} {{ form.city.label }}</div>
+  <div class = "col-20">{{ form.state }} {{ form.state.label }}</div>
+  <div class = "col-20">{{ form.zip }} {{ form.zip.label }}</div>
+  <div class = "col-20">{{ form.phone }} {{ form.phone.label }}</div>
+  <div class = "col-20">{{ form.income }} {{ form.income.label }}<span class = "white">*</span></div>
+  <div style="clear: both;">
+  <div class="col-5">{{ form.picture }}</div><div class="col-95">{{ form.picture.label }}</div> <br>
+
+  <div style="clear: both;">
+
+  <span class = "white">Please keep in touch with me:</span>
+  {{ form.communications(class_="nobullets") }}
+  <div style="clear: both;">
+  <br>
+  <span class = "white"> * Many of our grant funders ask for this information.  For those purposes it is fully anonymous and we don't use it for any other reason.  </span> <br>
+  <span class = "white"> ** Birthyear is used to determine the age groups of children participating in our programs.  Adults can enter anything prior to {{ currentyear - 18 }}. </span> <br>
+  <br>
+  <div style="clear: both;">
+  <button type="submit" value=Register class="submit">Submit</button>
+
+</form>
+
+{% endblock %}

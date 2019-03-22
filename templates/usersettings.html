@@ -4,13 +4,10 @@
 {% block content %}
 
 <h3 class = "white"> Update Registration </h3>
-
-<h3 class = "white"> Update Communication </h3>
+<a href="{{ url_for('register') }}" tabindex='180' class = "white">register</a>
 
 <h3 class = "white"> Password </h3>
 <a href="{{ url_for('user.change_password') }}" tabindex='190' class = "white">
   Change Password</a><br>
-
-
 
 {% endblock %}

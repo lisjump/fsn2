@@ -6,23 +6,25 @@
    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
-    {% if current_user.is_authenticated %}
-      {% set loginlist = (url_for('user.logout'), 'logout', 'Logout') -%}
-    {% else %}
-      {% set loginlist = (url_for('user.login'), 'login', 'Login') -%}
-    {% endif %}
+
+    {% set hometab = (url_for('index'), 'home', 'Home') -%}
+    {% set registertab = (url_for('register'), 'register', 'Register') -%}
+    {% set visittab = ('/visitlog', 'visit', 'Visit Log') -%}
+    {% set usersettab = (url_for('usersettings'), 'usersettings', 'Settings') -%}
+    {% set admintab = ('/adminhome', 'adminhome', 'Admin') -%}
+    {% set logintab = (url_for('user.logout'), 'logout', 'Logout') -%}
 
     <div class="menubox">
-      {% set navigation_bar = [
-        ('/', 'home', 'Home'),
-        ('/register', 'register', 'Register'),
-        ('/visitlog', 'visit', 'Visit Log'),
-        ('/usersettings', 'usersettings', 'Settings'),
-        loginlist,
-      ] -%}
-      {% set admin_bar = [
-        ('/adminhome', 'adminhome', 'Home'),
-      ] -%}
+      {% if "frontdesk" in current_user.rolenames %}
+          {% set navigation_bar = [hometab, registertab, visittab, admintab, logintab] -%}
+      {% elif "admin" in current_user.rolenames %}
+          {% set navigation_bar = [hometab, registertab, visittab, usersettab, admintab, logintab] -%}
+      {% elif current_user.is_authenticated %}
+          {% set navigation_bar = [hometab, visittab, usersettab, logintab] -%}
+      {% else %}
+          {% set logintab = (url_for('user.login'), 'login', 'Login') -%}
+          {% set navigation_bar = [hometab, logintab] -%}
+      {% endif %}
 
       {% set active_page = active_page|default('home') -%}
 
@@ -32,16 +34,6 @@
             <a href="{{ href|e }}">{{ caption|e }}</a>
           </li>
         {% endfor %}
-        {% if session.admin %}
-          {% for href, id, caption in admin_bar %}
-            <li class={% if id == active_page %}"activetab"{% else %}"tab"{% endif %}>
-              <a href="{{ href|e }}">{{ caption|e }}</a>
-            </li>
-          {% endfor %}
-          <li class="tab" onclick="Overlay('/adminlogin', '')">
-            <span class="menu"> Admin </span>
-          </li>
-        {% endif %}
       </ul>
 
     </div>

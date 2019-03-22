@@ -1,3 +1,63 @@
 RENAME TABLE patron TO user;
 RENAME TABLE patronhash TO userhousehold;
 ALTER TABLE userhousehold CHANGE `patronid` `userid` int(11);
+ALTER TABLE user ADD COLUMN email varchar(50) UNIQUE;
+ALTER TABLE user ADD COLUMN email_confirmed_at datetime;
+ALTER TABLE user ADD COLUMN password varchar(100);
+ALTER TABLE user ADD COLUMN active bool;
+
+INSERT INTO `table2` SELECT * FROM `table1`;
+
+
+mysqldump -u root -p database_name table_name > dump.txt
+mysql -u root -p database_name < dump.txt
+
+in Python:
+
+import main, datetime
+
+with main.app.app_context():
+  main.models.db.create_all()
+
+
+with main.app.app_context():
+      r = main.models.Role()
+      r.name = "admin"
+      main.models.db.session.add(r)
+      main.models.db.session.commit()
+      r = main.models.Role()
+      r.name = "frontdesk"
+      main.models.db.session.add(r)
+      main.models.db.session.commit()
+
+with main.app.app_context():
+      user = main.models.User(
+          email='user@gmail.com',
+          email_confirmed_at=datetime.datetime.utcnow(),
+          password=main.user_manager.hash_password('user'),
+          active = True
+      )
+      main.models.db.session.add(user)
+      main.models.db.session.commit()
+      user = main.models.User(
+          email='admin@gmail.com',
+          email_confirmed_at=datetime.datetime.utcnow(),
+          password=main.user_manager.hash_password('admin'),
+          active = True
+      )
+      role = main.models.Role.query.filter_by(name="admin").first()
+      user.roles.append(role)
+      main.models.db.session.add(user)
+      main.models.db.session.commit()
+      user = main.models.User(
+          email='front@gmail.com',
+          email_confirmed_at=datetime.datetime.utcnow(),
+          password=main.user_manager.hash_password('front'),
+          active = True
+      )
+      role = main.models.Role.query.filter_by(name="admin").first()
+      user.roles.append(role)
+      role = main.models.Role.query.filter_by(name="frontdesk").first()
+      user.roles.append(role)
+      main.models.db.session.add(user)
+      main.models.db.session.commit()

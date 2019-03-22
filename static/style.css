@@ -26,6 +26,7 @@ body {
   padding: 3%;
 }
 
+
 /* Clear floats after the columns */
 .row:after {
   content: "";
@@ -33,21 +34,51 @@ body {
   clear: both;
 }
 
+.col-5 {
+  float: left;
+  width: 3%;
+  padding: 1%;
+}
+
+.col-20 {
+  float: left;
+  width: 18%;
+  padding: 1%;
+}
+
 .col-25 {
   float: left;
-  width: 25%;
-  margin-top: 6px;
+  width: 23%;
+  padding: 1%;
+}
+
+.col-33 {
+  float: left;
+  width: 32%;
+  padding: 1%;
+}
+
+.col-50 {
+  float: left;
+  width: 48%;
+  padding: 1%;
 }
 
 .col-75 {
   float: left;
   width: 75%;
-  margin-top: 6px;
+  padding: 1%;
+}
+
+.col-95 {
+  float: left;
+  width: 93%;
+  padding: 1%;
 }
 
 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
-  .col-25, .col-75, .column {
+  .col-25, .col-75, .column, .col-50, .col-33 {
     width: 95%;
     margin-top: 0;
   }
@@ -63,7 +94,19 @@ input[type=text], input[type=password], select, textarea {
    resize: vertical;
  }
 
- label {
+ input.normalrow{
+    padding: 1px;
+    border: None;
+    margin: auto;
+    border-radius: 0;
+    resize: vertical;
+  }
+
+  td input[type="checkbox"].normalrow {
+      margin: auto;
+      width: auto;
+  }
+label {
    padding: 12px 12px 12px 0;
    display: inline-block;
    color:white;
@@ -112,7 +155,7 @@ button {
   background-color: #A33B20;
   border: 1px solid #A33B20;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
   margin: 5px;
   text-align: center;
   text-decoration: none;
@@ -141,14 +184,6 @@ buttonhighlight {
   border-radius: 5px;
 }
 
-input[type=checkbox]:checked + label,
-input[type=checkbox]:hover + label:hover,
-input[type=radio]:checked + label,
-input[type=radio]:hover + label:hover,
-input[type=checkbox]:checked + span,
-input[type=checkbox]:hover + span:hover,
-input[type=radio]:checked + span,
-input[type=radio]:hover + span:hover,
 .button:hover,
 button:hover,
 input[type=submit]:hover {
@@ -168,14 +203,6 @@ form.login {
   width: 250px;
 }
 
-input[type=checkbox].ignore:checked + label,
-input[type=checkbox].ignore:hover + label:hover,
-label.ignore,
-label.ignore:hover {
-  background: #316734;
-  border: none;
-  font-weight: regular;
-}
 
 /* ----------------- Table Elements --------------------- */
 
@@ -184,11 +211,12 @@ td {
 }
 
 table.datasheet{
-	width:100%;
-	padding:0px;
+	width:95%;
+	padding:1%;
 }
 
 th.datasheet, th.sessiondatasheet {
+  border-radius: 5px;
 	padding:3px;
 	background-color:#7FA951;
 	border-top:1px solid #81B784;
@@ -205,16 +233,18 @@ th.sessiondatasheet {
 }
 
 tr.datasheet {
+  border-radius: 5px;
 	vertical-align:middle;
 	background-color:white;
 }
 
 tr.hiderow {
-style="display:none;"
+  style="display:none;"
 }
 
-.normalrow {
+td.normalrow {
   color: black;
+  text-align: center;
 }
 
 .deletedrow {
@@ -408,6 +438,12 @@ span.cursor {
 }
 
 /* ------------------ tabbed menu --------------------- */
+
+ul.nobullets {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
 
 div.menubox {
   width: 100%;
